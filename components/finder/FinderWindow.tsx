@@ -11,6 +11,8 @@ interface Project {
   type: string;
   tags: string[];
   color: string;
+  image?: string;
+  logo?: string;
   points: string[];
   links: { type: LinkType; label: string; url: string }[];
 }
@@ -18,66 +20,36 @@ interface Project {
 const PROJECTS: Project[] = [
   {
     id: 1,
-    name: "Project Alpha",
-    type: "Web App",
-    tags: ["React", "TypeScript", "Postgres"],
-    color: "#e8e8f0",
+    name: "Tandem",
+    type: "AI Study Companion",
+    tags: ["Next.js", "React", "TailwindCSS", "TLDraw", "FastAPI", "Vertex AI Gemini", "ElevenLabs", "MediaPipe"],
+    color: "#e8edf5",
+    image: "/projects/tandem.png",
+    logo: "/projects/tandem-logo.png",
     points: [
-      "Built a full-stack dashboard with real-time updates",
-      "Reduced load time by 60% with edge caching",
-      "Shipped to 10k+ users with zero downtime deploys",
+      "Real-time AI tutor that watches your whiteboard, speaks to you, and guides you through problems",
+      "Interrupt the AI mid-sentence and it pivots to your new thought",
+      "Tracks intermediate steps, not just final answers, catches mistakes as you work",
     ],
     links: [
-      { type: "github", label: "GitHub", url: "#" },
-      { type: "demo", label: "Live Demo", url: "#" },
+      { type: "github", label: "GitHub", url: "https://github.com/ItzNotKevin/tandem" },
+      { type: "devpost", label: "Devpost", url: "https://devpost.com/software/tandem-jbmp0n" },
     ],
   },
   {
     id: 2,
-    name: "Project Beta",
-    type: "CLI Tool",
-    tags: ["Rust", "Systems"],
-    color: "#f0ede8",
+    name: "Resonance",
+    type: "Music Recommendation App",
+    tags: ["React Native", "Expo", "TypeScript", "FastAPI", "SQLite", "Spotify API", "Last.fm API"],
+    color: "#ede8f5",
+    image: "/projects/resonance.png",
     points: [
-      "Blazing-fast file watcher written in Rust",
-      "Handles 100k+ file events per second",
-      "Cross-platform: macOS, Linux, Windows",
+      "Tinder-style swipe interface for discovering new music based on songs you like",
+      "Uses Cosine, Euclidean, and Jaccard similarity algorithms that adapt after every 10 swipes",
+      "Pulls from Spotify + Last.fm data to blend audio features with community listening patterns",
     ],
     links: [
-      { type: "github", label: "GitHub", url: "#" },
-    ],
-  },
-  {
-    id: 3,
-    name: "Project Gamma",
-    type: "Mobile App",
-    tags: ["React Native", "Go"],
-    color: "#e8f0ea",
-    points: [
-      "Cross-platform mobile app for habit tracking",
-      "Offline-first with background sync",
-      "4.8★ rating on the App Store",
-    ],
-    links: [
-      { type: "github", label: "GitHub", url: "#" },
-      { type: "devpost", label: "Devpost", url: "#" },
-      { type: "demo", label: "Live Demo", url: "#" },
-    ],
-  },
-  {
-    id: 4,
-    name: "Project Delta",
-    type: "Web App",
-    tags: ["Next.js", "Tailwind"],
-    color: "#f0e8ea",
-    points: [
-      "Portfolio site with scroll-driven animations",
-      "Perfect Lighthouse score across all metrics",
-      "Custom design system built from scratch",
-    ],
-    links: [
-      { type: "github", label: "GitHub", url: "#" },
-      { type: "youtube", label: "Demo Video", url: "#" },
+      { type: "github", label: "GitHub", url: "https://github.com/ItzNotKevin/resonance" },
     ],
   },
 ];
@@ -131,7 +103,7 @@ export default function FinderWindow() {
           {/* Large preview */}
           <div className="flex-1 flex items-center justify-center" style={{ background: "#ffffff" }}>
             <div
-              className="rounded-xl flex items-center justify-center"
+              className="rounded-xl overflow-hidden flex items-center justify-center"
               style={{
                 width: "60%",
                 aspectRatio: "4/3",
@@ -139,16 +111,18 @@ export default function FinderWindow() {
                 border: "1px solid rgba(0,0,0,0.06)",
               }}
             >
-              <span className="text-[12px] font-medium" style={{ color: "#8e8e93" }}>
-                {project.name}
-              </span>
+              {project.image ? (
+                <img src={project.image} alt={project.name} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-[12px] font-medium" style={{ color: "#8e8e93" }}>{project.name}</span>
+              )}
             </div>
           </div>
 
           {/* Thumbnail strip */}
           <div
-            className="flex-shrink-0 flex items-center gap-2 px-4 overflow-x-auto"
-            style={{ height: 88, background: "#f2f2f2", borderTop: "1px solid #d9d9d9" }}
+            className="flex-shrink-0 flex items-center gap-3 px-4 overflow-x-auto"
+            style={{ height: 120, background: "#f2f2f2", borderTop: "1px solid #d9d9d9" }}
           >
             {PROJECTS.map((p, i) => (
               <button
@@ -156,17 +130,21 @@ export default function FinderWindow() {
                 onClick={() => setSelected(i)}
                 className="flex-shrink-0 rounded-lg overflow-hidden transition-all"
                 style={{
-                  width: 64,
-                  height: 64,
+                  width: 88,
+                  height: 88,
                   background: p.color,
                   border: selected === i ? "2.5px solid #2563eb" : "2px solid rgba(0,0,0,0.08)",
                   outline: selected === i ? "1.5px solid rgba(37,99,235,0.3)" : "none",
                   outlineOffset: 1,
                 }}
               >
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-[9px] font-medium" style={{ color: "#8e8e93" }}>P{i + 1}</span>
-                </div>
+                {p.image ? (
+                  <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="text-[9px] font-medium" style={{ color: "#8e8e93" }}>P{i + 1}</span>
+                  </div>
+                )}
               </button>
             ))}
           </div>
@@ -180,10 +158,16 @@ export default function FinderWindow() {
           {/* Icon + name */}
           <div className="flex flex-col items-center pt-5 pb-3 px-3" style={{ borderBottom: "1px solid #e5e5e5" }}>
             <div
-              className="rounded-xl mb-2 flex items-center justify-center"
+              className="rounded-xl mb-2 overflow-hidden flex items-center justify-center"
               style={{ width: 56, height: 56, background: project.color, border: "1px solid rgba(0,0,0,0.06)" }}
             >
-              <span className="text-[10px]" style={{ color: "#8e8e93" }}>APP</span>
+              {project.logo ? (
+                <img src={project.logo} alt={project.name} className="w-full h-full object-contain p-1" />
+              ) : project.image ? (
+                <img src={project.image} alt={project.name} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-[10px]" style={{ color: "#8e8e93" }}>APP</span>
+              )}
             </div>
             <p className="text-[12px] font-semibold text-center leading-tight" style={{ color: "#1d1d1f" }}>
               {project.name}
