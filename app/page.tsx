@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import TerminalWindow from "@/components/terminal/TerminalWindow";
-import NotesWindow from "@/components/notes/NotesWindow";
+import SplitAboutSection from "@/components/notes/SplitAboutSection";
 import { DottedGlowBackground } from "@/components/ui/dotted-glow-background";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 
@@ -15,6 +15,11 @@ const springTransition = {
 
 export default function Home() {
   const [typingDone, setTypingDone] = useState(false);
+
+  useEffect(() => {
+    window.history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = typingDone ? "" : "hidden";
@@ -56,15 +61,8 @@ export default function Home() {
         </motion.div>
       </ContainerScroll>
 
-      {/* About — Notes window scrolls in */}
-      <ContainerScroll
-        titleComponent={null}
-        mode="enter"
-        cardBackground="#faf8f2"
-        cardClassName="max-w-xl"
-      >
-        <NotesWindow />
-      </ContainerScroll>
+      {/* About — split screen with notes on left */}
+      <SplitAboutSection />
 
     </main>
   );

@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef } from "react";
-import { useScroll, useTransform, motion, MotionValue } from "motion/react";
+import { useScroll, useTransform, motion, MotionValue, useMotionTemplate } from "motion/react";
 
 export const ContainerScroll = ({
   titleComponent,
@@ -8,19 +8,21 @@ export const ContainerScroll = ({
   mode = "exit",
   cardBackground,
   cardClassName,
+  cardMinHeight,
 }: {
   titleComponent: string | React.ReactNode;
   children: React.ReactNode;
   mode?: "exit" | "enter";
   cardBackground?: string;
   cardClassName?: string;
+  cardMinHeight?: string;
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: mode === "exit"
       ? ["start start", "end start"]
-      : ["start end", "start start"],
+      : ["start end", "end end"],
   });
   const [isMobile, setIsMobile] = React.useState(false);
 
@@ -52,14 +54,25 @@ export const ContainerScroll = ({
   const enterTranslate = useTransform(scrollYProgress, [0, 1], [80, 0]);
   const enterOpacity = useTransform(scrollYProgress, [0, 0.25, 1], [0, 0.6, 1]);
 
+  // Shadow: float → grounded as card lands
+  const shadowBlur = useTransform(scrollYProgress, [0, 1], [96, 8]);
+  const shadowSpread = useTransform(scrollYProgress, [0, 1], [56, 0]);
+  const shadowOpacity = useTransform(scrollYProgress, [0, 1], [0.06, 0.14]);
+  const enterShadow = useMotionTemplate`0 2px ${shadowBlur}px ${shadowSpread}px rgba(0,0,0,${shadowOpacity})`;
+
   const rotate = mode === "exit" ? exitRotate : enterRotate;
   const scale = mode === "exit" ? exitScale : enterScale;
   const translate = mode === "exit" ? exitTranslate : enterTranslate;
   const opacity = mode === "exit" ? exitOpacity : enterOpacity;
+  const shadow = mode === "exit" ? FLOATING_SHADOW : enterShadow;
 
   return (
     <div
-      className="h-[60rem] md:h-[80rem] flex items-start justify-center relative p-2 md:p-10 pt-28 md:pt-32"
+      className={`flex justify-center relative ${
+        mode === "enter"
+          ? "h-[50rem] md:h-[60rem] items-end p-2 md:p-10 pb-12 md:pb-16"
+          : "h-[60rem] md:h-[80rem] items-start p-2 md:p-10 pt-28 md:pt-32"
+      }`}
       ref={containerRef}
     >
       <div
@@ -72,8 +85,10 @@ export const ContainerScroll = ({
           translate={translate}
           scale={scale}
           opacity={opacity}
+          shadow={shadow}
           background={cardBackground}
           cardClassName={cardClassName}
+          cardMinHeight={cardMinHeight}
         >
           {children}
         </Card>
@@ -97,17 +112,21 @@ export const Card = ({
   rotate,
   scale,
   opacity,
+  shadow,
   children,
   background,
   cardClassName,
+  cardMinHeight,
 }: {
   rotate: MotionValue<number>;
   scale: MotionValue<number>;
   translate: MotionValue<number>;
   opacity: MotionValue<number>;
+  shadow?: MotionValue<string> | string;
   children: React.ReactNode;
   background?: string;
   cardClassName?: string;
+  cardMinHeight?: string;
 }) => {
   return (
     <motion.div
@@ -116,7 +135,8 @@ export const Card = ({
         scale,
         opacity,
         background: background ?? "rgb(23,23,23)",
-        boxShadow: FLOATING_SHADOW,
+        boxShadow: shadow ?? FLOATING_SHADOW,
+        minHeight: cardMinHeight,
       }}
       className={`mx-auto w-full rounded-xl overflow-hidden ${cardClassName ?? "max-w-5xl"}`}
     >

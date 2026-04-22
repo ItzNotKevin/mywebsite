@@ -5,7 +5,7 @@ const NOTES_FONT = '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica
 export default function NotesWindow() {
   return (
     <div
-      className="w-full flex flex-col"
+      className="w-full h-full flex flex-col"
       style={{ fontFamily: NOTES_FONT, background: "#faf8f2" }}
     >
       {/* Title bar */}
@@ -21,7 +21,6 @@ export default function NotesWindow() {
         <div className="flex-1 text-center">
           <span className="text-xs font-medium" style={{ color: "#4a4640" }}>Notes</span>
         </div>
-        {/* Toolbar icons (right side balance) */}
         <div className="flex items-center gap-3">
           <EditIcon />
           <span className="text-xs font-medium" style={{ color: "#7a756e" }}>Aa</span>
@@ -42,21 +41,55 @@ export default function NotesWindow() {
       </div>
 
       {/* Note content */}
-      <div className="flex-1 px-8 pt-6 pb-8" style={{ background: "#faf8f2" }}>
-        <p
-          className="text-center text-xs mb-6"
-          style={{ color: "#a09b92" }}
-        >
-          April 21, 2026 at 12:00 AM
+      <div className="flex-1 px-8 pt-6 pb-8 overflow-y-auto" style={{ background: "#faf8f2" }}>
+        <p className="text-center text-xs mb-6" style={{ color: "#a09b92" }}>
+          April 22, 2026 at 12:00 AM
         </p>
-        <p
-          className="text-2xl font-bold mb-3 tracking-tight"
-          style={{ color: "#1e1c19" }}
-        >
+        <p className="text-2xl font-bold mb-4 tracking-tight" style={{ color: "#1e1c19" }}>
           About Me
         </p>
-        <p className="text-sm leading-relaxed" style={{ color: "#c5c0b8" }}>
-          Start writing...
+
+        <p className="text-sm leading-relaxed mb-5" style={{ color: "#3a3834" }}>
+          Hey! I'm Kevin — a software engineer who cares deeply about the details. I build things that are fast, feel great to use, and hold up under pressure.
+        </p>
+
+        <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#a09b92" }}>
+          Currently into
+        </p>
+        <ul className="mb-5 space-y-1.5">
+          {[
+            "Building polished UIs with React & Next.js",
+            "Systems programming and low-level stuff",
+            "Scroll-driven animations & micro-interactions",
+            "Making dev tools that spark joy",
+          ].map((item) => (
+            <li key={item} className="flex items-start gap-2 text-sm" style={{ color: "#3a3834" }}>
+              <span className="mt-0.5 flex-shrink-0" style={{ color: "#a09b92" }}>–</span>
+              {item}
+            </li>
+          ))}
+        </ul>
+
+        <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#a09b92" }}>
+          Stack
+        </p>
+        <div className="flex flex-wrap gap-2 mb-5">
+          {["TypeScript", "React", "Next.js", "Rust", "Go", "Postgres"].map((tag) => (
+            <span
+              key={tag}
+              className="text-xs px-2.5 py-1 rounded-md"
+              style={{ background: "#eae7e0", color: "#4a4640" }}
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#a09b92" }}>
+          Outside of work
+        </p>
+        <p className="text-sm leading-relaxed" style={{ color: "#3a3834" }}>
+          You'll find me down a design rabbit hole, tinkering with a side project, or trying to figure out how something works just for the sake of knowing.
         </p>
       </div>
     </div>
