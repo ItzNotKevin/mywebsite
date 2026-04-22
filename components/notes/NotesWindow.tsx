@@ -43,54 +43,53 @@ export default function NotesWindow() {
       {/* Note content */}
       <div className="flex-1 px-8 pt-6 pb-8 overflow-y-auto" style={{ background: "#faf8f2" }}>
         <p className="text-center text-xs mb-6" style={{ color: "#a09b92" }}>
-          April 22, 2026 at 12:00 AM
+          {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+          {" at "}
+          {new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })}
         </p>
-        <p className="text-2xl font-bold mb-4 tracking-tight" style={{ color: "#1e1c19" }}>
-          About Me
+        <p className="text-2xl font-bold mb-3 tracking-tight" style={{ color: "#1e1c19" }}>
+          about me
+        </p>
+        <p className="text-sm leading-relaxed mb-6" style={{ color: "#3a3834" }}>
+          hey! i'm kevin.
         </p>
 
-        <p className="text-sm leading-relaxed mb-5" style={{ color: "#3a3834" }}>
-          Hey! I'm Kevin — a software engineer who cares deeply about the details. I build things that are fast, feel great to use, and hold up under pressure.
-        </p>
+        <NoteSection bullet="cs @ university of waterloo" items={["3.98 gpa", "honours, co-op"]} />
+        <NoteSection bullet="experience" items={[
+          "full-stack developer @ pin design build",
+          "coding instructor (300+ students)",
+        ]} />
+        <NoteSection bullet="currently into" items={[
+          "building polished uis with react & next.js",
+          "ai/ml, agentic ai & computer vision",
+        ]} />
+        <NoteSection bullet="highlights" items={[
+          "built an ai teaching assistant @ hack canada 2026",
+          "deca provincial champion & icdc qualifier",
+        ]} />
+        <NoteSection bullet="interests" items={[
+          "lifelong soccer player",
+          "poker enthusiast",
+        ]} last />
+      </div>
+    </div>
+  );
+}
 
-        <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#a09b92" }}>
-          Currently into
-        </p>
-        <ul className="mb-5 space-y-1.5">
-          {[
-            "Building polished UIs with React & Next.js",
-            "Systems programming and low-level stuff",
-            "Scroll-driven animations & micro-interactions",
-            "Making dev tools that spark joy",
-          ].map((item) => (
-            <li key={item} className="flex items-start gap-2 text-sm" style={{ color: "#3a3834" }}>
-              <span className="mt-0.5 flex-shrink-0" style={{ color: "#a09b92" }}>–</span>
-              {item}
-            </li>
-          ))}
-        </ul>
-
-        <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#a09b92" }}>
-          Stack
-        </p>
-        <div className="flex flex-wrap gap-2 mb-5">
-          {["TypeScript", "React", "Next.js", "Rust", "Go", "Postgres"].map((tag) => (
-            <span
-              key={tag}
-              className="text-xs px-2.5 py-1 rounded-md"
-              style={{ background: "#eae7e0", color: "#4a4640" }}
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-
-        <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#a09b92" }}>
-          Outside of work
-        </p>
-        <p className="text-sm leading-relaxed" style={{ color: "#3a3834" }}>
-          You'll find me down a design rabbit hole, tinkering with a side project, or trying to figure out how something works just for the sake of knowing.
-        </p>
+function NoteSection({ bullet, items, last }: { bullet: string; items: string[]; last?: boolean }) {
+  return (
+    <div className={last ? "" : "mb-5"}>
+      <div className="flex items-start gap-2 mb-1.5">
+        <span className="flex-shrink-0 text-sm" style={{ color: "#a09b92" }}>✦</span>
+        <span className="text-sm font-medium" style={{ color: "#1e1c19" }}>{bullet}</span>
+      </div>
+      <div className="flex flex-col gap-1 pl-6">
+        {items.map((item) => (
+          <div key={item} className="flex items-start gap-2">
+            <span className="flex-shrink-0 text-xs mt-0.5" style={{ color: "#c5c0b8" }}>↳</span>
+            <span className="text-sm leading-snug" style={{ color: "#3a3834" }}>{item}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
