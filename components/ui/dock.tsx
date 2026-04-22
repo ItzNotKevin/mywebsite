@@ -230,6 +230,18 @@ function DockCard({ children, id }: DockCardProps) {
   const controls = useAnimation()
   const timeoutRef = useRef<number | null>(null)
 
+  const stopAnimation = () => {
+    isAnimating.current = false
+    dock.setAnimatingIndexes(
+      dock.animatingIndexes.filter((index) => index !== parseInt(id))
+    )
+    opacity.set(0)
+    controls.start({
+      y: 0,
+      transition: { duration: 0.5 },
+    })
+  }
+
   const handleClick = () => {
     if (!isAnimating.current) {
       isAnimating.current = true
@@ -243,16 +255,13 @@ function DockCard({ children, id }: DockCardProps) {
           duration: 0.5,
         },
       })
+      // Auto-stop after ~3 bounces (3 seconds)
+      timeoutRef.current = window.setTimeout(() => {
+        stopAnimation()
+      }, 3000)
     } else {
-      isAnimating.current = false
-      dock.setAnimatingIndexes(
-        dock.animatingIndexes.filter((index) => index !== parseInt(id))
-      )
-      opacity.set(0)
-      controls.start({
-        y: 0,
-        transition: { duration: 0.5 },
-      })
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      stopAnimation()
     }
   }
 

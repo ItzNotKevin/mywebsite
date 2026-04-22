@@ -1,6 +1,8 @@
 "use client"
 
-import { Mail } from "lucide-react"
+import React, { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { FileText, Mail } from "lucide-react"
 import { Dock, DockCard, DockDivider } from "@/components/ui/dock"
 
 function GithubIcon() {
@@ -20,48 +22,56 @@ function LinkedinIcon() {
 }
 
 const SOCIALS = [
-  {
-    id: "0",
-    label: "GitHub",
-    icon: <GithubIcon />,
-    href: "https://github.com/ItzNotKevin",
-  },
-  {
-    id: "1",
-    label: "LinkedIn",
-    icon: <LinkedinIcon />,
-    href: "https://www.linkedin.com/in/kevinwxli",
-  },
-  {
-    id: "2",
-    label: "Email",
-    icon: <Mail size={20} className="text-neutral-700" />,
-    href: "mailto:likevin1511@gmail.com",
-  },
+  { id: "0", label: "GitHub", icon: <GithubIcon />, href: "https://github.com/ItzNotKevin" },
+  { id: "1", label: "LinkedIn", icon: <LinkedinIcon />, href: "https://www.linkedin.com/in/kevinwxli" },
+  { id: "2", label: "Resume", icon: <FileText size={20} className="text-neutral-700" />, href: "/ResumeMar2026V3.pdf" },
+  { id: "3", label: "Email", icon: <Mail size={20} className="text-neutral-700" />, href: "mailto:likevin1511@gmail.com" },
 ]
+
+function DockItem({ social, showDivider }: { social: typeof SOCIALS[0]; showDivider: boolean }) {
+  const [hovered, setHovered] = useState(false)
+
+  return (
+    <>
+      {showDivider && <DockDivider />}
+      <div className="relative flex flex-col items-center" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+        <AnimatePresence>
+          {hovered && (
+            <motion.div
+              initial={{ opacity: 0, y: 4, scale: 0.92 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 4, scale: 0.92 }}
+              transition={{ duration: 0.12, ease: "easeOut" }}
+              className="absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-1 rounded-md bg-neutral-50 text-neutral-700 text-xs whitespace-nowrap pointer-events-none shadow-[rgba(17,24,28,0.08)_0_0_0_1px,rgba(17,24,28,0.08)_0_1px_2px_-1px,rgba(17,24,28,0.04)_0_2px_4px]"
+            >
+              {social.label}
+              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-neutral-50" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <a
+          href={social.href}
+          target={social.href.startsWith("mailto:") ? undefined : "_blank"}
+          rel="noopener noreferrer"
+          aria-label={social.label}
+        >
+          <DockCard id={social.id}>
+            {social.icon}
+          </DockCard>
+        </a>
+      </div>
+    </>
+  )
+}
 
 export default function SocialDock() {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
       <Dock>
         {SOCIALS.map((social, i) => (
-          <React.Fragment key={social.id}>
-            {i === 2 && <DockDivider />}
-            <a
-              href={social.href}
-              target={social.href.startsWith("mailto") ? undefined : "_blank"}
-              rel="noopener noreferrer"
-              aria-label={social.label}
-            >
-              <DockCard id={social.id}>
-                {social.icon}
-              </DockCard>
-            </a>
-          </React.Fragment>
+          <DockItem key={social.id} social={social} showDivider={i === 2} />
         ))}
       </Dock>
     </div>
   )
 }
-
-import React from "react"
