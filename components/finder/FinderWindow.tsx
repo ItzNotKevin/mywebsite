@@ -13,6 +13,7 @@ interface Project {
   color: string;
   image?: string;
   logo?: string;
+  emoji?: string;
   points: string[];
   links: { type: LinkType; label: string; url: string }[];
 }
@@ -43,6 +44,7 @@ const PROJECTS: Project[] = [
     tags: ["React Native", "Expo", "TypeScript", "FastAPI", "SQLite", "Spotify API", "Last.fm API"],
     color: "#ede8f5",
     image: "/projects/resonance.png",
+    emoji: "🎵",
     points: [
       "Tinder-style swipe interface for discovering new music based on songs you like",
       "Uses Cosine, Euclidean, and Jaccard similarity algorithms that adapt after every 10 swipes",
@@ -144,10 +146,10 @@ export default function FinderWindow() {
                 >
                   {p.logo ? (
                     <img src={p.logo} alt={p.name} className="w-8 h-8 object-contain" style={{ transform: "translateX(-2px)" }} />
+                  ) : p.emoji ? (
+                    <span style={{ fontSize: 22 }}>{p.emoji}</span>
                   ) : (
-                    <span style={{ fontSize: 22 }}>
-                      {p.id === 1 ? "📚" : p.id === 2 ? "🎵" : "📁"}
-                    </span>
+                    <span style={{ fontSize: 22 }}>📁</span>
                   )}
                 </div>
                 <span
@@ -174,6 +176,8 @@ export default function FinderWindow() {
             >
               {project.logo ? (
                 <img src={project.logo} alt={project.name} className="w-full h-full object-contain p-1" style={{ transform: "translateX(-2px)" }} />
+              ) : project.emoji ? (
+                <span style={{ fontSize: 28 }}>{project.emoji}</span>
               ) : project.image ? (
                 <img src={project.image} alt={project.name} className="w-full h-full object-cover" />
               ) : (

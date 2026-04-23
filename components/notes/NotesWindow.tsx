@@ -54,7 +54,7 @@ export default function NotesWindow() {
           hey! i'm kevin.
         </p>
 
-        <NoteSection bullet="cs @ university of waterloo" items={["3.98 gpa", "honours, co-op"]} />
+        <NoteSection bullet="cs @ university of waterloo" href="https://cs.uwaterloo.ca/" items={["3.98 gpa", "honours, co-op"]} />
         <NoteSection bullet="experience" items={[
           "full-stack developer @ pin design build",
           "coding instructor (300+ students)",
@@ -76,12 +76,28 @@ export default function NotesWindow() {
   );
 }
 
-function NoteSection({ bullet, items, last }: { bullet: string; items: string[]; last?: boolean }) {
+function NoteSection({ bullet, href, items, last }: { bullet: string; href?: string; items: string[]; last?: boolean }) {
   return (
     <div className={last ? "" : "mb-5"}>
       <div className="flex items-start gap-2 mb-1.5">
-        <span className="flex-shrink-0 text-sm" style={{ color: "#a09b92" }}>✦</span>
-        <span className="text-sm font-medium" style={{ color: "#1e1c19" }}>{bullet}</span>
+        <span className="flex-shrink-0" style={{ color: "#a09b92", fontSize: 16 }}>✦</span>
+        {href ? (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative font-medium"
+            style={{ color: "#1e1c19", fontSize: 16 }}
+          >
+            {bullet}
+            <span
+              className="absolute left-0 bottom-0 h-px w-full transition-transform duration-200 origin-left scale-x-0 group-hover:scale-x-100"
+              style={{ background: "#c5beb4" }}
+            />
+          </a>
+        ) : (
+          <span className="font-medium" style={{ color: "#1e1c19", fontSize: 16 }}>{bullet}</span>
+        )}
       </div>
       <div className="flex flex-col gap-1 pl-6">
         {items.map((item) => (

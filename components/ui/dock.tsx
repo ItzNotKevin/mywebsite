@@ -236,9 +236,10 @@ function DockCard({ children, id }: DockCardProps) {
       dock.animatingIndexes.filter((index) => index !== parseInt(id))
     )
     opacity.set(0)
+    controls.stop()
     controls.start({
       y: 0,
-      transition: { duration: 0.5 },
+      transition: { type: "spring", stiffness: 300, damping: 20 },
     })
   }
 
@@ -281,7 +282,7 @@ function DockCard({ children, id }: DockCardProps) {
   let width = useSpring(widthSync, { mass: 0.1, stiffness: 150, damping: 12 })
 
   return (
-    <div className="flex flex-col items-center gap-1" key={id}>
+    <div className="relative flex items-center justify-center" key={id}>
       <motion.button
         ref={cardRef}
         className="rounded-lg border aspect-square dark:border-white/5 border-black/5 border-opacity-10 dark:bg-neutral-800 bg-neutral-100 saturate-90 brightness-90 transition-filter duration-200 hover:saturate-100 hover:brightness-112 flex items-center justify-center"
@@ -300,8 +301,8 @@ function DockCard({ children, id }: DockCardProps) {
           <motion.div
             key={id}
             layoutId={id}
-            className="rounded-full"
-            style={{ opacity }}
+            className="absolute rounded-full"
+            style={{ opacity, top: "calc(100% + 4px)" }}
           >
             <motion.div
               exit={{ transition: { duration: 0 } }}
