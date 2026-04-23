@@ -101,50 +101,61 @@ export default function FinderWindow() {
         {/* Gallery view */}
         <div className="flex-1 flex flex-col overflow-hidden" style={{ background: "#ffffff" }}>
           {/* Large preview */}
-          <div className="flex-1 flex items-center justify-center" style={{ background: "#ffffff" }}>
+          <div className="flex-1 flex items-center justify-center p-6" style={{ background: "#f0f0f0" }}>
             <div
               className="rounded-xl overflow-hidden flex items-center justify-center"
               style={{
-                width: "60%",
-                aspectRatio: "4/3",
+                maxWidth: "85%",
+                maxHeight: "100%",
                 background: project.color,
-                border: "1px solid rgba(0,0,0,0.06)",
+                border: "1px solid rgba(0,0,0,0.08)",
+                boxShadow: "0 2px 12px rgba(0,0,0,0.10)",
               }}
             >
               {project.image ? (
-                <img src={project.image} alt={project.name} className="w-full h-full object-cover" />
+                <img src={project.image} alt={project.name} style={{ display: "block", maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
               ) : (
-                <span className="text-[12px] font-medium" style={{ color: "#8e8e93" }}>{project.name}</span>
+                <span className="text-[12px] font-medium p-8" style={{ color: "#8e8e93" }}>{project.name}</span>
               )}
             </div>
           </div>
 
           {/* Thumbnail strip */}
           <div
-            className="flex-shrink-0 flex items-center gap-3 px-4 overflow-x-auto"
-            style={{ height: 120, background: "#f2f2f2", borderTop: "1px solid #d9d9d9" }}
+            className="flex-shrink-0 flex items-center justify-center gap-4 px-4 overflow-x-auto"
+            style={{ height: 110, background: "#f2f2f2", borderTop: "1px solid #d9d9d9" }}
           >
             {PROJECTS.map((p, i) => (
               <button
                 key={p.id}
                 onClick={() => setSelected(i)}
-                className="flex-shrink-0 rounded-lg overflow-hidden transition-all"
-                style={{
-                  width: 88,
-                  height: 88,
-                  background: p.color,
-                  border: selected === i ? "2.5px solid #2563eb" : "2px solid rgba(0,0,0,0.08)",
-                  outline: selected === i ? "1.5px solid rgba(37,99,235,0.3)" : "none",
-                  outlineOffset: 1,
-                }}
+                className="flex-shrink-0 flex flex-col items-center gap-1.5 transition-all"
+                style={{ outline: "none" }}
               >
-                {p.image ? (
-                  <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-[9px] font-medium" style={{ color: "#8e8e93" }}>P{i + 1}</span>
-                  </div>
-                )}
+                <div
+                  className="rounded-xl flex items-center justify-center transition-all"
+                  style={{
+                    width: 52,
+                    height: 52,
+                    background: "#e8e8e8",
+                    border: selected === i ? "2px solid #2563eb" : "1.5px solid rgba(0,0,0,0.10)",
+                    boxShadow: selected === i ? "0 0 0 3px rgba(37,99,235,0.18)" : "none",
+                  }}
+                >
+                  {p.logo ? (
+                    <img src={p.logo} alt={p.name} className="w-8 h-8 object-contain" style={{ transform: "translateX(-2px)" }} />
+                  ) : (
+                    <span style={{ fontSize: 22 }}>
+                      {p.id === 1 ? "📚" : p.id === 2 ? "🎵" : "📁"}
+                    </span>
+                  )}
+                </div>
+                <span
+                  className="text-[10px] font-medium leading-none"
+                  style={{ color: selected === i ? "#2563eb" : "#5a5a5e" }}
+                >
+                  {p.name}
+                </span>
               </button>
             ))}
           </div>
@@ -162,7 +173,7 @@ export default function FinderWindow() {
               style={{ width: 56, height: 56, background: project.color, border: "1px solid rgba(0,0,0,0.06)" }}
             >
               {project.logo ? (
-                <img src={project.logo} alt={project.name} className="w-full h-full object-contain p-1" />
+                <img src={project.logo} alt={project.name} className="w-full h-full object-contain p-1" style={{ transform: "translateX(-2px)" }} />
               ) : project.image ? (
                 <img src={project.image} alt={project.name} className="w-full h-full object-cover" />
               ) : (
