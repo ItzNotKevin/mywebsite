@@ -28,39 +28,63 @@ const SOCIALS = [
   { id: "3", label: "Email", icon: <Mail size={20} className="text-neutral-700" />, href: "mailto:likevin1511@gmail.com" },
 ]
 
-function DockItem({ social, showDivider }: { social: typeof SOCIALS[0]; showDivider: boolean }) {
+const SITE_URL = "kevinwxli.dev"
+
+function DockItem({ social }: { social: typeof SOCIALS[0] }) {
   const [hovered, setHovered] = useState(false)
 
   return (
-    <>
-      {showDivider && <DockDivider />}
-      <div className="relative flex flex-col items-center" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
-        <AnimatePresence>
-          {hovered && (
-            <motion.div
-              initial={{ opacity: 0, y: 4, scale: 0.92 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 4, scale: 0.92 }}
-              transition={{ duration: 0.12, ease: "easeOut" }}
-              className="absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-1 rounded-md bg-neutral-50 text-neutral-700 text-xs whitespace-nowrap pointer-events-none shadow-[rgba(17,24,28,0.08)_0_0_0_1px,rgba(17,24,28,0.08)_0_1px_2px_-1px,rgba(17,24,28,0.04)_0_2px_4px]"
-            >
-              {social.label}
-              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-neutral-50" />
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <a
-          href={social.href}
-          target={social.href.startsWith("mailto:") ? undefined : "_blank"}
-          rel="noopener noreferrer"
-          aria-label={social.label}
-        >
-          <DockCard id={social.id}>
-            {social.icon}
-          </DockCard>
-        </a>
-      </div>
-    </>
+    <div className="relative flex flex-col items-center" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+      <AnimatePresence>
+        {hovered && (
+          <motion.div
+            initial={{ opacity: 0, y: 4, scale: 0.92 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 4, scale: 0.92 }}
+            transition={{ duration: 0.12, ease: "easeOut" }}
+            className="absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-1 rounded-md bg-neutral-50 text-neutral-700 text-xs whitespace-nowrap pointer-events-none shadow-[rgba(17,24,28,0.08)_0_0_0_1px,rgba(17,24,28,0.08)_0_1px_2px_-1px,rgba(17,24,28,0.04)_0_2px_4px]"
+          >
+            {social.label}
+            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-neutral-50" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <a
+        href={social.href}
+        target={social.href.startsWith("mailto:") ? undefined : "_blank"}
+        rel="noopener noreferrer"
+        aria-label={social.label}
+      >
+        <DockCard id={social.id}>
+          {social.icon}
+        </DockCard>
+      </a>
+    </div>
+  )
+}
+
+function WebringItem({ id, label, href, children }: { id: string; label: string; href: string; children: React.ReactNode }) {
+  const [hovered, setHovered] = useState(false)
+  return (
+    <div className="relative flex flex-col items-center" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+      <AnimatePresence>
+        {hovered && (
+          <motion.div
+            initial={{ opacity: 0, y: 4, scale: 0.92 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 4, scale: 0.92 }}
+            transition={{ duration: 0.12, ease: "easeOut" }}
+            className="absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-1 rounded-md bg-neutral-50 text-neutral-700 text-xs whitespace-nowrap pointer-events-none shadow-[rgba(17,24,28,0.08)_0_0_0_1px,rgba(17,24,28,0.08)_0_1px_2px_-1px,rgba(17,24,28,0.04)_0_2px_4px]"
+          >
+            {label}
+            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-neutral-50" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
+        <DockCard id={id}>{children}</DockCard>
+      </a>
+    </div>
   )
 }
 
@@ -68,9 +92,19 @@ export default function SocialDock() {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
       <Dock>
-        {SOCIALS.map((social, i) => (
-          <DockItem key={social.id} social={social} showDivider={i === 2} />
+        {SOCIALS.map((social) => (
+          <DockItem key={social.id} social={social} />
         ))}
+        <DockDivider />
+        <WebringItem id="wr-prev" label="Previous" href={`https://cs.uwatering.com/#${SITE_URL}?nav=prev`}>
+          <span className="text-neutral-700 text-base leading-none">←</span>
+        </WebringItem>
+        <WebringItem id="wr-home" label="CS Webring" href={`https://cs.uwatering.com/#${SITE_URL}`}>
+          <img src="https://cs.uwatering.com/icon.black.svg" alt="CS Webring" width={20} height={20} style={{ opacity: 0.75 }} />
+        </WebringItem>
+        <WebringItem id="wr-next" label="Next" href={`https://cs.uwatering.com/#${SITE_URL}?nav=next`}>
+          <span className="text-neutral-700 text-base leading-none">→</span>
+        </WebringItem>
       </Dock>
     </div>
   )
