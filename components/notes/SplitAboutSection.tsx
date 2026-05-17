@@ -18,7 +18,7 @@ const slideUp = {
 
 export default function SplitAboutSection() {
   return (
-    <section className="flex items-center px-8 md:px-12 py-16 gap-6">
+    <section className="flex items-center px-8 md:px-12 pt-2 pb-32 gap-6">
 
       {/* Left: Notes window */}
       <div className="flex-1 min-w-0" style={{ perspective: "1200px" }}>
