@@ -49,7 +49,7 @@ export default function Home() {
       </motion.div>
 
       {/* Hero with ContainerScroll */}
-      <ContainerScroll titleComponent={null}>
+      <ContainerScroll titleComponent={null} cardBackground="transparent">
         {/* Terminal springs in */}
         <motion.div
           className="w-full h-full"

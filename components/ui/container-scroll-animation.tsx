@@ -42,17 +42,17 @@ export const ContainerScroll = ({
   };
 
   // Exit: starts flat, tilts back and fades out
-  const exitRotate = useTransform(scrollYProgress, [0, 1], [0, -20]);
-  const exitScale = useTransform(scrollYProgress, [0, 1], scaleDimensions());
-  const exitTranslate = useTransform(scrollYProgress, [0, 1], [0, -120]);
-  const exitOpacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 0.5, 0]);
+  const exitRotate = useTransform(scrollYProgress, [0.5, 0.85], [0, -20]);
+  const exitScale = useTransform(scrollYProgress, [0.5, 0.85], scaleDimensions());
+  const exitTranslate = useTransform(scrollYProgress, [0, 1], [0, 0]);
+  const exitOpacity = useTransform(scrollYProgress, [0.5, 0.85], [1, 0]);
 
   // Enter: starts tilted forward, settles flat and fades in
   const dims = scaleDimensions();
-  const enterRotate = useTransform(scrollYProgress, [0, 1], [20, 0]);
-  const enterScale = useTransform(scrollYProgress, [0, 1], [dims[1], dims[0]]);
-  const enterTranslate = useTransform(scrollYProgress, [0, 1], [80, 0]);
-  const enterOpacity = useTransform(scrollYProgress, [0, 0.25, 1], [0, 0.6, 1]);
+  const enterRotate = useTransform(scrollYProgress, [0.15, 0.85], [20, 0]);
+  const enterScale = useTransform(scrollYProgress, [0.15, 0.85], [dims[1], dims[0]]);
+  const enterTranslate = useTransform(scrollYProgress, [0.15, 0.85], [80, 0]);
+  const enterOpacity = useTransform(scrollYProgress, [0.15, 0.35, 0.85], [0, 0.6, 1]);
 
   // Shadow: float → grounded as card lands
   const shadowBlur = useTransform(scrollYProgress, [0, 1], [96, 8]);
@@ -71,7 +71,7 @@ export const ContainerScroll = ({
       className={`flex justify-center relative ${
         mode === "enter"
           ? "h-[50rem] md:h-[60rem] items-end p-2 md:p-10 pb-12 md:pb-16"
-          : "h-[60rem] md:h-[80rem] items-start p-2 md:p-10 pt-28 md:pt-32"
+          : "h-[45rem] md:h-[60rem] items-start p-2 md:p-10 pt-16 md:pt-20"
       }`}
       ref={containerRef}
     >

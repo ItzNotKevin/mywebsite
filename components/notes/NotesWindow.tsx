@@ -56,8 +56,8 @@ export default function NotesWindow() {
 
         <NoteSection bullet="cs @ university of waterloo" href="https://cs.uwaterloo.ca/" items={["3.98 gpa", "honours, co-op"]} />
         <NoteSection bullet="experience" items={[
+          { text: "software automation engineer @ corpay", href: "https://www.corpay.com" },
           "full-stack developer @ pin design build",
-          "coding instructor (300+ students)",
         ]} />
         <NoteSection bullet="currently into" items={[
           "building polished uis with react & next.js",
@@ -76,7 +76,9 @@ export default function NotesWindow() {
   );
 }
 
-function NoteSection({ bullet, href, items, last }: { bullet: string; href?: string; items: string[]; last?: boolean }) {
+type NoteItem = string | { text: string; href: string };
+
+function NoteSection({ bullet, href, items, last }: { bullet: string; href?: string; items: NoteItem[]; last?: boolean }) {
   return (
     <div className={last ? "" : "mb-5"}>
       <div className="flex items-start gap-2 mb-1.5">
@@ -100,12 +102,32 @@ function NoteSection({ bullet, href, items, last }: { bullet: string; href?: str
         )}
       </div>
       <div className="flex flex-col gap-1 pl-6">
-        {items.map((item) => (
-          <div key={item} className="flex items-start gap-2">
-            <span className="flex-shrink-0 text-xs mt-0.5" style={{ color: "#c5c0b8" }}>↳</span>
-            <span className="text-sm leading-snug" style={{ color: "#3a3834" }}>{item}</span>
-          </div>
-        ))}
+        {items.map((item) => {
+          const text = typeof item === "string" ? item : item.text;
+          const itemHref = typeof item === "string" ? undefined : item.href;
+          return (
+            <div key={text} className="flex items-start gap-2">
+              <span className="flex-shrink-0 text-xs mt-0.5" style={{ color: "#c5c0b8" }}>↳</span>
+              {itemHref ? (
+                <a
+                  href={itemHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative text-sm leading-snug"
+                  style={{ color: "#3a3834" }}
+                >
+                  {text}
+                  <span
+                    className="absolute left-0 bottom-0 h-px w-full transition-transform duration-200 origin-left scale-x-0 group-hover:scale-x-100"
+                    style={{ background: "#c5beb4" }}
+                  />
+                </a>
+              ) : (
+                <span className="text-sm leading-snug" style={{ color: "#3a3834" }}>{text}</span>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
