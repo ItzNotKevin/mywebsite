@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 const KEY_SOUNDS_DOWN: Record<string, [number, number]> = {
@@ -198,7 +198,7 @@ function SyntaxHighlightedText({ text }: { text: string }) {
   );
 }
 
-interface TerminalLine { type: "command" | "output"; content: string; }
+interface TerminalLine { type: "command" | "output" | "interrupted"; content: string; }
 
 export interface TerminalProps {
   commands: string[];
@@ -227,6 +227,7 @@ export function Terminal({
   const contentRef = useRef<HTMLDivElement>(null);
   const inView = useInView(containerRef);
   const { down, up } = useAudio(enableSound);
+  const abortRef = useRef(false);
 
   const [lines, setLines] = useState<TerminalLine[]>([]);
   const [currentText, setCurrentText] = useState("");
@@ -240,6 +241,47 @@ export function Terminal({
   const currentOutputs = useMemo(() => outputs[commandIdx] || [], [outputs, commandIdx]);
   const isLastCommand = commandIdx === commands.length - 1;
 
+  const skip = useCallback(() => {
+    if (abortRef.current || phase === "done" || phase === "idle") return;
+    abortRef.current = true;
+
+    setLines((prev) => {
+      const next = [...prev];
+      if (phase === "typing") {
+        next.push({ type: "interrupted", content: currentText });
+        for (let i = commandIdx; i < commands.length; i++) {
+          next.push({ type: "command", content: commands[i] });
+          for (const out of outputs[i] ?? []) next.push({ type: "output", content: out });
+        }
+      } else if (phase === "outputting") {
+        const outs = outputs[commandIdx] ?? [];
+        for (let j = outputIdx; j < outs.length; j++) next.push({ type: "output", content: outs[j] });
+        for (let i = commandIdx + 1; i < commands.length; i++) {
+          next.push({ type: "command", content: commands[i] });
+          for (const out of outputs[i] ?? []) next.push({ type: "output", content: out });
+        }
+      } else if (phase === "pausing") {
+        for (let i = commandIdx + 1; i < commands.length; i++) {
+          next.push({ type: "command", content: commands[i] });
+          for (const out of outputs[i] ?? []) next.push({ type: "output", content: out });
+        }
+      }
+      return next;
+    });
+
+    setCurrentText("");
+    setPhase("done");
+    onComplete?.();
+  }, [phase, commandIdx, outputIdx, currentText, commands, outputs, onComplete]);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === "c") skip();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [skip]);
+
   useEffect(() => {
     if (!inView || phase !== "idle") return;
     const t = setTimeout(() => setPhase("typing"), initialDelay);
@@ -252,6 +294,7 @@ export function Terminal({
       const char = currentCommand[charIdx];
       down(char);
       const t = setTimeout(() => {
+        if (abortRef.current) return;
         up(char);
         setCurrentText(currentCommand.slice(0, charIdx + 1));
         setCharIdx((c) => c + 1);
@@ -260,6 +303,7 @@ export function Terminal({
     } else {
       down("Enter");
       const t = setTimeout(() => {
+        if (abortRef.current) return;
         up("Enter");
         setPhase("executing");
       }, 80);
@@ -268,7 +312,7 @@ export function Terminal({
   }, [phase, charIdx, currentCommand, typingSpeed, down, up]);
 
   useEffect(() => {
-    if (phase !== "executing") return;
+    if (phase !== "executing" || abortRef.current) return;
     setLines((prev) => [...prev, { type: "command", content: currentCommand }]);
     setCurrentText("");
     if (currentOutputs.length > 0) { setOutputIdx(0); setPhase("outputting"); }
@@ -280,12 +324,14 @@ export function Terminal({
     if (phase !== "outputting") return;
     if (outputIdx >= 0 && outputIdx < currentOutputs.length) {
       const t = setTimeout(() => {
+        if (abortRef.current) return;
         setLines((prev) => [...prev, { type: "output", content: currentOutputs[outputIdx] }]);
         setOutputIdx((i) => i + 1);
       }, 150);
       return () => clearTimeout(t);
     } else if (outputIdx >= currentOutputs.length) {
       const t = setTimeout(() => {
+        if (abortRef.current) return;
         if (isLastCommand) { setPhase("done"); onComplete?.(); } else { setPhase("pausing"); }
       }, 300);
       return () => clearTimeout(t);
@@ -295,6 +341,7 @@ export function Terminal({
   useEffect(() => {
     if (phase !== "pausing") return;
     const t = setTimeout(() => {
+      if (abortRef.current) return;
       setCharIdx(0); setOutputIdx(-1);
       setCommandIdx((c) => c + 1);
       setPhase("typing");
@@ -338,10 +385,17 @@ export function Terminal({
 
         {/* Terminal Content */}
         <div ref={contentRef} className="no-visible-scrollbar h-[28rem] overflow-y-auto p-4 font-mono">
+          {phase !== "idle" && phase !== "done" && (
+            <div className="leading-relaxed whitespace-pre-wrap mb-1">
+              <span className="text-neutral-500 select-none"># press ^C to skip</span>
+            </div>
+          )}
           {lines.map((line, i) => (
             <div key={i} className="leading-relaxed whitespace-pre-wrap">
               {line.type === "command" ? (
                 <span>{prompt}<SyntaxHighlightedText text={line.content} /></span>
+              ) : line.type === "interrupted" ? (
+                <span>{prompt}<SyntaxHighlightedText text={line.content} /><span className="text-red-400">^C</span></span>
               ) : (
                 <span className="text-neutral-400">{line.content}</span>
               )}
