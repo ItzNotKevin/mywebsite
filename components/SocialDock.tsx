@@ -24,7 +24,7 @@ function LinkedinIcon() {
 const SOCIALS = [
   { id: "0", label: "GitHub", icon: <GithubIcon />, href: "https://github.com/ItzNotKevin" },
   { id: "1", label: "LinkedIn", icon: <LinkedinIcon />, href: "https://www.linkedin.com/in/kevinwxli" },
-  { id: "2", label: "Resume", icon: <FileText size={20} className="text-neutral-700" />, href: "/ResumeMar2026V3.pdf" },
+  { id: "2", label: "Resume", icon: <FileText size={20} className="text-neutral-700" />, href: "/ResumeAug2026.pdf" },
   { id: "3", label: "Email", icon: <Mail size={20} className="text-neutral-700" />, href: "mailto:likevin1511@gmail.com" },
 ]
 
