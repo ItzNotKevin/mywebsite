@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, cloneElement, isValidElement, type ReactNode, type ReactElement } from "react";
+import { Music } from "lucide-react";
 
 const FINDER_FONT = '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif';
 
@@ -13,6 +14,7 @@ interface Project {
   color: string;
   image?: string;
   logo?: string;
+  icon?: ReactNode;
   emoji?: string;
   points: string[];
   links: { type: LinkType; label: string; url: string }[];
@@ -26,7 +28,7 @@ const PROJECTS: Project[] = [
     tags: ["Next.js", "React", "TailwindCSS", "TLDraw", "FastAPI", "Vertex AI Gemini", "ElevenLabs", "MediaPipe"],
     color: "#e8edf5",
     image: "/projects/tandem.png",
-    logo: "/projects/tandem-logo.png",
+    logo: "/projects/tandem-logo-v2.png",
     points: [
       "Real-time AI tutor that watches your whiteboard, speaks to you, and guides you through problems",
       "Interrupt the AI mid-sentence and it pivots to your new thought",
@@ -39,12 +41,48 @@ const PROJECTS: Project[] = [
   },
   {
     id: 2,
+    name: "Provenance",
+    type: "Photo Authenticity Platform",
+    tags: ["Expo", "React Native", "TypeScript", "NativeWind", "Anchor (Rust)", "Solana", "Node.js", "MongoDB Atlas", "Chrome Extension"],
+    color: "#1c1a24",
+    image: "/projects/provenance.png",
+    logo: "/projects/provenance-logo.png",
+    points: [
+      "Cryptographically signs photos with device-bound Ed25519 keys at the moment of capture, then anchors the proof on Solana",
+      "Verification returns a three-tier verdict: green for an exact match, amber for a recompressed derivative via perceptual hashing, grey for no record",
+      "Sub-cent, ~400ms on-chain notarization, with a browsable registry and Chrome extension for verifying photos in the wild",
+    ],
+    links: [
+      { type: "github", label: "GitHub", url: "https://github.com/ItzNotKevin/provenance" },
+      { type: "devpost", label: "Devpost", url: "https://devpost.com/software/provenance-6eo7rs" },
+    ],
+  },
+  {
+    id: 3,
+    name: "Sidebar",
+    type: "AI Deliberation Platform",
+    tags: ["Next.js", "React", "TypeScript", "TailwindCSS", "Hono", "Node.js", "MongoDB Atlas", "Google Gemini", "Voyage Embeddings"],
+    color: "#f5ead9",
+    image: "/projects/sidebar.png",
+    logo: "/projects/sidebar-logo-v2.png",
+    points: [
+      "Casts a panel of 3-6 AI personas engineered for maximal disagreement to debate your dilemma from every angle",
+      "Runs a structured deliberation: opening statements, rebuttals, closing pitches, then a Chair persona synthesizes a final verdict",
+      "Streams the debate live over SSE with exact replay, backed by vector search over persona embeddings for diverse casting",
+    ],
+    links: [
+      { type: "github", label: "GitHub", url: "https://github.com/Calvinky-Lee/Sidebar" },
+      { type: "devpost", label: "Devpost", url: "https://devpost.com/software/jury" },
+    ],
+  },
+  {
+    id: 4,
     name: "Resonance",
     type: "Music Recommendation App",
     tags: ["React Native", "Expo", "TypeScript", "FastAPI", "SQLite", "Spotify API", "Last.fm API"],
     color: "#ede8f5",
     image: "/projects/resonance.png",
-    emoji: "🎵",
+    icon: <Music color="#6b5b95" strokeWidth={1.75} />,
     points: [
       "Tinder-style swipe interface for discovering new music based on songs you like",
       "Uses Cosine, Euclidean, and Jaccard similarity algorithms that adapt after every 10 swipes",
@@ -103,7 +141,7 @@ export default function FinderWindow() {
         {/* Gallery view */}
         <div className="flex-1 flex flex-col overflow-hidden" style={{ background: "#ffffff" }}>
           {/* Large preview */}
-          <div className="flex-1 flex items-center justify-center p-6" style={{ background: "#f0f0f0" }}>
+          <div className="flex-1 flex items-center justify-center p-6 overflow-hidden" style={{ background: "#f0f0f0", minHeight: 0 }}>
             <div
               className="rounded-xl overflow-hidden flex items-center justify-center"
               style={{
@@ -135,7 +173,7 @@ export default function FinderWindow() {
                 style={{ outline: "none" }}
               >
                 <div
-                  className="rounded-xl flex items-center justify-center transition-all"
+                  className="rounded-xl overflow-hidden flex items-center justify-center transition-all"
                   style={{
                     width: 52,
                     height: 52,
@@ -145,7 +183,9 @@ export default function FinderWindow() {
                   }}
                 >
                   {p.logo ? (
-                    <img src={p.logo} alt={p.name} className="w-8 h-8 object-contain" style={{ transform: "translateX(-2px)" }} />
+                    <img src={p.logo} alt={p.name} className="w-8 h-8 object-contain" />
+                  ) : p.icon && isValidElement(p.icon) ? (
+                    cloneElement(p.icon as ReactElement<{ size?: number }>, { size: 22 })
                   ) : p.emoji ? (
                     <span style={{ fontSize: 22 }}>{p.emoji}</span>
                   ) : (
@@ -175,7 +215,9 @@ export default function FinderWindow() {
               style={{ width: 56, height: 56, background: project.color, border: "1px solid rgba(0,0,0,0.06)" }}
             >
               {project.logo ? (
-                <img src={project.logo} alt={project.name} className="w-full h-full object-contain p-1" style={{ transform: "translateX(-2px)" }} />
+                <img src={project.logo} alt={project.name} className="w-full h-full object-contain p-1" />
+              ) : project.icon && isValidElement(project.icon) ? (
+                cloneElement(project.icon as ReactElement<{ size?: number }>, { size: 28 })
               ) : project.emoji ? (
                 <span style={{ fontSize: 28 }}>{project.emoji}</span>
               ) : project.image ? (

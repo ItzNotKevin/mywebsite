@@ -56,7 +56,7 @@ export default function NotesWindow() {
 
         <NoteSection bullet="cs @ university of waterloo" href="https://cs.uwaterloo.ca/" items={["3.98 gpa", "honours, co-op"]} />
         <NoteSection bullet="experience" items={[
-          { text: "software automation engineer @ corpay", href: "https://www.corpay.com" },
+          { text: "engineering intern @ corpay", href: "https://www.corpay.com" },
           "full-stack developer @ pin design build",
         ]} />
         <NoteSection bullet="currently into" items={[
@@ -64,7 +64,7 @@ export default function NotesWindow() {
           "ai/ml, agentic ai & computer vision",
         ]} />
         <NoteSection bullet="highlights" items={[
-          "built an ai teaching assistant @ hack canada 2026",
+          "won cuhacking 7 with provenance",
           "deca provincial champion & icdc qualifier",
         ]} />
         <NoteSection bullet="interests" items={[
